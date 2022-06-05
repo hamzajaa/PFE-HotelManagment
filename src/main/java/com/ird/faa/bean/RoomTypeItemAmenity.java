@@ -26,11 +26,10 @@ public class RoomTypeItemAmenity implements Archivable {
     @Temporal(TemporalType.DATE)
     private Date dateCreation;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Amenity amenity;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private RoomType roomType;
-
 
     public RoomTypeItemAmenity() {
         super();
@@ -46,7 +45,7 @@ public class RoomTypeItemAmenity implements Archivable {
     }
 
     public Amenity getAmenity() {
-        return amenity;
+        return this.amenity;
     }
 
     public void setAmenity(Amenity amenity) {
@@ -54,7 +53,7 @@ public class RoomTypeItemAmenity implements Archivable {
     }
 
     public RoomType getRoomType() {
-        return roomType;
+        return this.roomType;
     }
 
     public void setRoomType(RoomType roomType) {

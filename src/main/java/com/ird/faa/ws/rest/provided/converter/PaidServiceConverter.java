@@ -11,12 +11,16 @@ import com.ird.faa.ws.rest.provided.vo.PaidServiceVo;
 @Component
 public class PaidServiceConverter extends AbstractConverter<PaidService, PaidServiceVo> {
 
+
+    //    @Autowired
+//    private RoomTypeConverter roomTypeConverter;
     @Autowired
-    private RoomTypeConverter roomTypeConverter;
+    private PaidServiceItemTypeConverter paidServiceItemTypeConverter;
+    private Boolean paidServiceItemTypes;
     @Autowired
     private PriceTypeConverter priceTypeConverter;
     private Boolean priceType;
-    private Boolean roomTypes;
+    //    private Boolean roomTypes;
     private Boolean couponManagment;
 
 
@@ -51,8 +55,11 @@ public class PaidServiceConverter extends AbstractConverter<PaidService, PaidSer
             if (vo.getPriceTypeVo() != null && this.priceType)
                 item.setPriceType(priceTypeConverter.toItem(vo.getPriceTypeVo()));
 
-            if (ListUtil.isNotEmpty(vo.getRoomTypesVo()) && this.roomTypes)
-                item.setRoomTypes(roomTypeConverter.toItem(vo.getRoomTypesVo()));
+//            if (ListUtil.isNotEmpty(vo.getRoomTypesVo()) && this.roomTypes)
+//                item.setRoomTypes(roomTypeConverter.toItem(vo.getRoomTypesVo()));
+
+            if (ListUtil.isNotEmpty(vo.getPaidServiceItemTypesVo()) && this.paidServiceItemTypes)
+                item.setPaidServiceItemTypes(paidServiceItemTypeConverter.toItem(vo.getPaidServiceItemTypesVo()));
 
             return item;
         }
@@ -90,11 +97,17 @@ public class PaidServiceConverter extends AbstractConverter<PaidService, PaidSer
             if (item.getPriceType() != null && this.priceType) {
                 vo.setPriceTypeVo(priceTypeConverter.toVo(item.getPriceType()));
             }
-            if (ListUtil.isNotEmpty(item.getRoomTypes()) && this.roomTypes) {
-                roomTypeConverter.init(true);
-                roomTypeConverter.setPaidService(false);
-                vo.setRoomTypesVo(roomTypeConverter.toVo(item.getRoomTypes()));
-                roomTypeConverter.setPaidService(true);
+//            if (ListUtil.isNotEmpty(item.getRoomTypes()) && this.roomTypes) {
+//                roomTypeConverter.init(true);
+//                roomTypeConverter.setPaidService(false);
+//                vo.setRoomTypesVo(roomTypeConverter.toVo(item.getRoomTypes()));
+//                roomTypeConverter.setPaidService(true);
+//            }
+            if (ListUtil.isNotEmpty(item.getPaidServiceItemTypes()) && this.paidServiceItemTypes) {
+                paidServiceItemTypeConverter.init(true);
+                paidServiceItemTypeConverter.setPaidService(false);
+                vo.setPaidServiceItemTypesVo(paidServiceItemTypeConverter.toVo(item.getPaidServiceItemTypes()));
+                paidServiceItemTypeConverter.setPaidService(true);
             }
 
             return vo;
@@ -103,18 +116,19 @@ public class PaidServiceConverter extends AbstractConverter<PaidService, PaidSer
 
     public void init(Boolean value) {
         priceType = value;
-        roomTypes = value;
+//        roomTypes = value;
         couponManagment = value;
+        paidServiceItemTypes = value;
     }
 
 
-    public RoomTypeConverter getRoomTypeConverter() {
-        return this.roomTypeConverter;
-    }
-
-    public void setRoomTypeConverter(RoomTypeConverter roomTypeConverter) {
-        this.roomTypeConverter = roomTypeConverter;
-    }
+//    public RoomTypeConverter getRoomTypeConverter() {
+//        return this.roomTypeConverter;
+//    }
+//
+//    public void setRoomTypeConverter(RoomTypeConverter roomTypeConverter) {
+//        this.roomTypeConverter = roomTypeConverter;
+//    }
 
     public PriceTypeConverter getPriceTypeConverter() {
         return this.priceTypeConverter;
@@ -132,14 +146,33 @@ public class PaidServiceConverter extends AbstractConverter<PaidService, PaidSer
         this.priceType = priceType;
     }
 
+    //
+//    public Boolean isRoomTypes() {
+//        return this.roomTypes;
+//    }
+//
+//    public void setRoomTypes(Boolean roomTypes) {
+//        this.roomTypes = roomTypes;
+//    }
 
-    public Boolean isRoomTypes() {
-        return this.roomTypes;
+    public PaidServiceItemTypeConverter getPaidServiceItemTypeConverter() {
+        return paidServiceItemTypeConverter;
     }
 
-    public void setRoomTypes(Boolean roomTypes) {
-        this.roomTypes = roomTypes;
+    public void setPaidServiceItemTypeConverter(PaidServiceItemTypeConverter paidServiceItemTypeConverter) {
+        this.paidServiceItemTypeConverter = paidServiceItemTypeConverter;
     }
+
+    public Boolean isPaidServiceItemTypes() {
+        return this.paidServiceItemTypes;
+    }
+
+    public void setPaidServiceItemTypes(Boolean paidServiceItemTypeS) {
+        this.paidServiceItemTypes = paidServiceItemTypeS;
+    }
+
+
+
 
 
     public void setCouponManagment(Boolean couponManagment) {

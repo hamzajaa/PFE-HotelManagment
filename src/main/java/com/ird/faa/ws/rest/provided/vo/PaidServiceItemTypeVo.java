@@ -1,11 +1,8 @@
 package com.ird.faa.ws.rest.provided.vo;
 
-public class AmenityVo {
+public class PaidServiceItemTypeVo {
 
     private String id;
-    private String name;
-    private String image;
-    private Boolean active;
     private Boolean archive;
     private String dateArchivage;
     private String dateCreation;
@@ -16,8 +13,11 @@ public class AmenityVo {
     private String dateCreationMax;
     private String dateCreationMin;
 
+    private RoomTypeVo roomTypeVo;
+    private PaidServiceVo paidServiceVo;
 
-    public AmenityVo() {
+
+    public PaidServiceItemTypeVo() {
         super();
     }
 
@@ -27,30 +27,6 @@ public class AmenityVo {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getImage() {
-        return this.image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public Boolean getActive() {
-        return this.active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     public Boolean getArchive() {
@@ -108,6 +84,23 @@ public class AmenityVo {
 
     public void setDateCreationMin(String dateCreationMin) {
         this.dateCreationMin = dateCreationMin;
+    }
+
+
+    public RoomTypeVo getRoomTypeVo() {
+        return this.roomTypeVo;
+    }
+
+    public void setRoomTypeVo(RoomTypeVo roomTypeVo) {
+        this.roomTypeVo = roomTypeVo;
+    }
+
+    public PaidServiceVo getPaidServiceVo() {
+        return this.paidServiceVo;
+    }
+
+    public void setPaidServiceVo(PaidServiceVo paidServiceVo) {
+        this.paidServiceVo = paidServiceVo;
     }
 
 

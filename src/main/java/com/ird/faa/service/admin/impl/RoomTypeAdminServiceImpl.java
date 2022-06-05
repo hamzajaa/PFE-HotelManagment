@@ -1,8 +1,8 @@
 package com.ird.faa.service.admin.impl;
 
-import com.ird.faa.bean.*;
+import com.ird.faa.bean.RoomType;
+import com.ird.faa.bean.RoomTypeItemAmenity;
 import com.ird.faa.dao.RoomTypeDao;
-import com.ird.faa.service.admin.facade.AmenityAdminService;
 import com.ird.faa.service.admin.facade.RoomTypeAdminService;
 import com.ird.faa.service.admin.facade.RoomTypeItemAmenityAdminService;
 import com.ird.faa.service.core.facade.ArchivableService;
@@ -28,8 +28,8 @@ public class RoomTypeAdminServiceImpl extends AbstractServiceImpl<RoomType> impl
 
     @Autowired
     private ArchivableService<RoomType> archivableService;
-    @Autowired
-    private AmenityAdminService amenityService;
+//    @Autowired
+//    private AmenityAdminService amenityService;
 
     @Autowired
     private RoomTypeItemAmenityAdminService roomTypeItemAmenityService;
@@ -127,8 +127,8 @@ public class RoomTypeAdminServiceImpl extends AbstractServiceImpl<RoomType> impl
 
     private void findAssociatedLists(RoomType roomType) {
         if (roomType != null && roomType.getId() != null) {
-            List<RoomTypeItemAmenity> roomTypeItemAmenities = roomTypeItemAmenityService.findByRoomTypeId(roomType.getId());
-            roomType.setRoomTypeItemAmenities(roomTypeItemAmenities);
+            List<RoomTypeItemAmenity> roomTypeItemAmenitys = roomTypeItemAmenityService.findByRoomTypeId(roomType.getId());
+            roomType.setRoomTypeItemAmenitys(roomTypeItemAmenitys);
         }
     }
 
@@ -138,35 +138,24 @@ public class RoomTypeAdminServiceImpl extends AbstractServiceImpl<RoomType> impl
         }
     }
 
-    private void associateRoomTypeItemAmenity(RoomType roomType, List<RoomTypeItemAmenity> roomTypeItemAmenities) {
-        if (ListUtil.isNotEmpty(roomTypeItemAmenities)) {
-            roomTypeItemAmenities.forEach(e -> e.setRoomType(roomType));
+    private void associateRoomTypeItemAmenity(RoomType roomType, List<RoomTypeItemAmenity> roomTypeItemAmenitys) {
+        if (ListUtil.isNotEmpty(roomTypeItemAmenitys)) {
+            roomTypeItemAmenitys.forEach(e -> e.setRoomType(roomType));
         }
     }
 
     private void updateAssociatedLists(RoomType roomType) {
         if (roomType != null && roomType.getId() != null) {
             List
-                    <List<RoomTypeItemAmenity>> resultRoomTypeItemAmenity = roomTypeItemAmenityService.getToBeSavedAndToBeDeleted(roomTypeItemAmenityService.findByRoomTypeId(roomType.getId()), roomType.getRoomTypeItemAmenities());
-            roomTypeItemAmenityService.delete(resultRoomTypeItemAmenity.get(1));
-            associateRoomTypeItemAmenity(roomType, resultRoomTypeItemAmenity.get(0));
-            roomTypeItemAmenityService.update(resultRoomTypeItemAmenity.get(0));
+                    <List<RoomTypeItemAmenity>> resultRoomTypeItemAmenitys = roomTypeItemAmenityService.getToBeSavedAndToBeDeleted(roomTypeItemAmenityService.findByRoomTypeId(roomType.getId()), roomType.getRoomTypeItemAmenitys());
+            roomTypeItemAmenityService.delete(resultRoomTypeItemAmenitys.get(1));
+            associateRoomTypeItemAmenity(roomType, resultRoomTypeItemAmenitys.get(0));
+            roomTypeItemAmenityService.update(resultRoomTypeItemAmenitys.get(0));
 
 
         }
     }
 
-    private void saveRoomTypeItemAmenity(RoomType roomType, List<RoomTypeItemAmenity> roomTypeItemAmenities) {
-
-        if (ListUtil.isNotEmpty(roomType.getRoomTypeItemAmenities())) {
-            List<RoomTypeItemAmenity> savedRoomTypeItemAmenity = new ArrayList<>();
-            roomTypeItemAmenities.forEach(element -> {
-                element.setRoomType(roomType);
-                roomTypeItemAmenityService.save(element);
-            });
-            roomType.setRoomTypeItemAmenities(savedRoomTypeItemAmenity);
-        }
-    }
 
     @Transactional
     public int deleteById(Long id) {
@@ -213,12 +202,18 @@ public class RoomTypeAdminServiceImpl extends AbstractServiceImpl<RoomType> impl
 
 
         RoomType savedRoomType = roomTypeDao.save(roomType);
+        if (ListUtil.isNotEmpty(roomType.getRoomTypeItemAmenitys())) {
+            roomType.getRoomTypeItemAmenitys().forEach(e -> {
+                e.setRoomType(roomType);
+                roomTypeItemAmenityService.save(e);
+            });
+        }
 
-        saveRoomTypeItemAmenity(savedRoomType, roomType.getRoomTypeItemAmenities());
-        result = savedRoomType;
+//        saveRoomTypeItemAmenitys(savedRoomType, roomType.getRoomTypeItemAmenitys());
+
 //        }
 
-        return result;
+        return savedRoomType;
     }
 
     @Override
@@ -230,6 +225,17 @@ public class RoomTypeAdminServiceImpl extends AbstractServiceImpl<RoomType> impl
         return list;
     }
 
+    private void saveRoomTypeItemAmenitys(RoomType roomType, List<RoomTypeItemAmenity> roomTypeItemAmenitys) {
+
+        if (ListUtil.isNotEmpty(roomType.getRoomTypeItemAmenitys())) {
+            List<RoomTypeItemAmenity> savedRoomTypeItemAmenitys = new ArrayList<>();
+            roomTypeItemAmenitys.forEach(element -> {
+                element.setRoomType(roomType);
+                roomTypeItemAmenityService.save(element);
+            });
+            roomType.setRoomTypeItemAmenitys(savedRoomTypeItemAmenitys);
+        }
+    }
 
     @Override
     @Transactional
@@ -275,24 +281,24 @@ public class RoomTypeAdminServiceImpl extends AbstractServiceImpl<RoomType> impl
         return entityManager.createQuery(query).getResultList();
     }
 
-    private List<Amenity> prepareAmenitys(RoomType roomType, List<Amenity> amenities) {
-        for (Amenity amenity : amenities) {
-            amenity.setRoomType(roomType);
-        }
-        return amenities;
-    }
+//    private List<Amenity> prepareAmenitys(RoomType roomType, List<Amenity> amenities) {
+//        for (Amenity amenity : amenities) {
+//            amenity.setRoomType(roomType);
+//        }
+//        return amenities;
+//    }
 
-    private void saveAmenitys(RoomType roomType, List<Amenity> amenitys) {
-
-        if (ListUtil.isNotEmpty(roomType.getAmenitys())) {
-            List<Amenity> savedAmenitys = new ArrayList<>();
-            amenitys.forEach(element -> {
-                element.setRoomType(roomType);
-                amenityService.save(element);
-            });
-            roomType.setAmenitys(savedAmenitys);
-        }
-    }
+//    private void saveAmenitys(RoomType roomType, List<Amenity> amenitys) {
+//
+//        if (ListUtil.isNotEmpty(roomType.getAmenitys())) {
+//            List<Amenity> savedAmenitys = new ArrayList<>();
+//            amenitys.forEach(element -> {
+//                element.setRoomType(roomType);
+//                amenityService.save(element);
+//            });
+//            roomType.setAmenitys(savedAmenitys);
+//        }
+//    }
 
 
     @Override
@@ -309,12 +315,12 @@ public class RoomTypeAdminServiceImpl extends AbstractServiceImpl<RoomType> impl
             roomTypes.forEach(e -> roomTypeDao.save(e));
         }
     }
-
-    private void associateAmenity(RoomType roomType, List<Amenity> amenity) {
-        if (ListUtil.isNotEmpty(amenity)) {
-            amenity.forEach(e -> e.setRoomType(roomType));
-        }
-    }
+//
+//    private void associateAmenity(RoomType roomType, List<Amenity> amenity) {
+//        if (ListUtil.isNotEmpty(amenity)) {
+//            amenity.forEach(e -> e.setRoomType(roomType));
+//        }
+//    }
 
 
 }

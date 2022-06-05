@@ -1,16 +1,14 @@
 package com.ird.faa.dao;
 
+import com.ird.faa.bean.PaidService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
-import com.ird.faa.bean.PaidService;
+import java.util.List;
 
 
 @Repository
-public interface PaidServiceDao extends JpaRepository<PaidService,Long> {
-
-
+public interface PaidServiceDao extends JpaRepository<PaidService, Long> {
 
 
     PaidService findByCode(String code);
@@ -18,6 +16,7 @@ public interface PaidServiceDao extends JpaRepository<PaidService,Long> {
     int deleteByCode(String code);
 
     List<PaidService> findByPriceTypeCode(String code);
+
     int deleteByPriceTypeCode(String code);
 
     List<PaidService> findByPriceTypeId(Long id);

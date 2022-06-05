@@ -238,25 +238,22 @@ public class BookingAdminServiceImpl extends AbstractServiceImpl<Booking> implem
         findBookingStatus(booking);
         findPriceManager(booking);
 
-        if (booking.getBookingNumber() != null) {
-            return null;
-        } else {
 
-            if (booking.getTotal() == null) {
-                booking.setTotal(BigDecimal.valueOf(0));
-            }
-            booking.setTotal(calcTotal(booking.getBookingItemRooms()));
-
-            booking.setTotalPay(caltTotalPay(booking.getPayments()).add(booking.getTotalPay()));
-
-            Booking savedBooking = bookingDao.save(booking);
-
-            saveBookingItemRooms(savedBooking, booking.getBookingItemRooms());
-            savePayments(savedBooking, booking.getPayments());
-
-
-            result = savedBooking;
+        if (booking.getTotal() == null) {
+            booking.setTotal(BigDecimal.valueOf(0));
         }
+        booking.setTotal(calcTotal(booking.getBookingItemRooms()));
+
+        booking.setTotalPay(caltTotalPay(booking.getPayments()).add(booking.getTotalPay()));
+
+        Booking savedBooking = bookingDao.save(booking);
+
+        saveBookingItemRooms(savedBooking, booking.getBookingItemRooms());
+        savePayments(savedBooking, booking.getPayments());
+
+
+        result = savedBooking;
+
         return result;
     }
 

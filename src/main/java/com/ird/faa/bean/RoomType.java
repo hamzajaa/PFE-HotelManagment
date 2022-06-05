@@ -46,28 +46,28 @@ public class RoomType implements Archivable {
     @Temporal(TemporalType.DATE)
     private Date dateCreation;
 
-    @ManyToOne
-    private PaidService paidService;
+//    @ManyToOne
+//    private PaidService paidService;
 
     @OneToMany(mappedBy = "roomType")
-    private List<RoomTypeItemAmenity> roomTypeItemAmenities;
+    private List<RoomTypeItemAmenity> roomTypeItemAmenitys;
 
-    public List<RoomTypeItemAmenity> getRoomTypeItemAmenities() {
-        return roomTypeItemAmenities;
+    public List<RoomTypeItemAmenity> getRoomTypeItemAmenitys() {
+        return this.roomTypeItemAmenitys;
     }
 
-    public void setRoomTypeItemAmenities(List<RoomTypeItemAmenity> roomTypeItemAmenities) {
-        this.roomTypeItemAmenities = roomTypeItemAmenities;
+    public void setRoomTypeItemAmenitys(List<RoomTypeItemAmenity> roomTypeItemAmenitys) {
+        this.roomTypeItemAmenitys = roomTypeItemAmenitys;
     }
 
 
-    public PaidService getPaidService() {
-        return paidService;
-    }
-
-    public void setPaidService(PaidService paidService) {
-        this.paidService = paidService;
-    }
+//    public PaidService getPaidService() {
+//        return paidService;
+//    }
+//
+//    public void setPaidService(PaidService paidService) {
+//        this.paidService = paidService;
+//    }
 
     @ManyToOne
     private CouponManagment couponManagment;
@@ -80,8 +80,8 @@ public class RoomType implements Archivable {
         this.couponManagment = couponManagment;
     }
 
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<Amenity> amenitys;
+//    @OneToMany(cascade = {CascadeType.ALL})
+//    private List<Amenity> amenitys;
 
     public RoomType() {
         super();
@@ -169,13 +169,13 @@ public class RoomType implements Archivable {
         this.kidsOccupancy = kidsOccupancy;
     }
 
-    public List<Amenity> getAmenitys() {
-        return this.amenitys;
-    }
-
-    public void setAmenitys(List<Amenity> amenitys) {
-        this.amenitys = amenitys;
-    }
+//    public List<Amenity> getAmenitys() {
+//        return this.amenitys;
+//    }
+//
+//    public void setAmenitys(List<Amenity> amenitys) {
+//        this.amenitys = amenitys;
+//    }
 
     public BigDecimal getBasePrice() {
         return this.basePrice;

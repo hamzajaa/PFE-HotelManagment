@@ -1,31 +1,26 @@
 package com.ird.faa.service.chercheur.impl;
 
-import java.util.List;
-import java.util.Date;
-
-import java.util.ArrayList;
-
-import com.ird.faa.bean.Expenses;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import com.ird.faa.service.util.StringUtil;
-import com.ird.faa.security.common.SecurityUtil;
-import com.ird.faa.security.bean.User;
-import org.springframework.stereotype.Service;
-
-import javax.persistence.EntityManager;
-
-import com.ird.faa.bean.RoomType;
 import com.ird.faa.bean.Amenity;
+import com.ird.faa.bean.RoomType;
 import com.ird.faa.dao.RoomTypeDao;
-import com.ird.faa.service.chercheur.facade.RoomTypeChercheurService;
+import com.ird.faa.security.bean.User;
+import com.ird.faa.security.common.SecurityUtil;
 import com.ird.faa.service.chercheur.facade.AmenityChercheurService;
-
-import com.ird.faa.ws.rest.provided.vo.RoomTypeVo;
-import com.ird.faa.service.util.*;
-
+import com.ird.faa.service.chercheur.facade.RoomTypeChercheurService;
 import com.ird.faa.service.core.facade.ArchivableService;
 import com.ird.faa.service.core.impl.AbstractServiceImpl;
+import com.ird.faa.service.util.ListUtil;
+import com.ird.faa.service.util.SearchUtil;
+import com.ird.faa.service.util.StringUtil;
+import com.ird.faa.ws.rest.provided.vo.RoomTypeVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> implements RoomTypeChercheurService {
@@ -46,7 +41,7 @@ public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> 
     @Override
     public List<RoomType> findAll() {
         List<RoomType> result = new ArrayList();
-        result.addAll(findAllNonArchive());
+//        result.addAll(findAllNonArchive());
         result.addAll(findAllByOwner());
         return result;
     }
@@ -105,14 +100,14 @@ public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> 
     @Override
     public RoomType findByIdWithAssociatedList(Long id) {
         RoomType roomType = findById(id);
-        findAssociatedLists(roomType);
+//        findAssociatedLists(roomType);
         return roomType;
     }
 
     private void findAssociatedLists(RoomType roomType) {
         if (roomType != null && roomType.getId() != null) {
             List<Amenity> amenitys = amenityService.findByRoomTypeId(roomType.getId());
-            roomType.setAmenitys(amenitys);
+//            roomType.setAmenitys(amenitys);
         }
     }
 
@@ -122,16 +117,16 @@ public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> 
         }
     }
 
-    private void updateAssociatedLists(RoomType roomType) {
-        if (roomType != null && roomType.getId() != null) {
-            List
-                    <List<Amenity>> resultAmenitys = amenityService.getToBeSavedAndToBeDeleted(amenityService.findByRoomTypeId(roomType.getId()), roomType.getAmenitys());
-            amenityService.delete(resultAmenitys.get(1));
-            associateAmenity(roomType, resultAmenitys.get(0));
-            amenityService.update(resultAmenitys.get(0));
-
-        }
-    }
+//    private void updateAssociatedLists(RoomType roomType) {
+//        if (roomType != null && roomType.getId() != null) {
+//            List
+//                    <List<Amenity>> resultAmenitys = amenityService.getToBeSavedAndToBeDeleted(amenityService.findByRoomTypeId(roomType.getId()), roomType.getAmenitys());
+//            amenityService.delete(resultAmenitys.get(1));
+//            associateAmenity(roomType, resultAmenitys.get(0));
+//            amenityService.update(resultAmenitys.get(0));
+//
+//        }
+//    }
 
     @Transactional
     public int deleteById(Long id) {
@@ -145,16 +140,16 @@ public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> 
     }
 
 
-    @Override
-    public RoomType update(RoomType roomType) {
-        RoomType foundedRoomType = findById(roomType.getId());
-        if (foundedRoomType == null) return null;
-        else {
-            archivableService.prepare(roomType);
-            updateAssociatedLists(roomType);
-            return roomTypeDao.save(roomType);
-        }
-    }
+//    @Override
+//    public RoomType update(RoomType roomType) {
+//        RoomType foundedRoomType = findById(roomType.getId());
+//        if (foundedRoomType == null) return null;
+//        else {
+//            archivableService.prepare(roomType);
+//            updateAssociatedLists(roomType);
+//            return roomTypeDao.save(roomType);
+//        }
+//    }
 
     private void prepareSave(RoomType roomType) {
         roomType.setDateCreation(new Date());
@@ -177,7 +172,7 @@ public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> 
 
             RoomType savedRoomType = roomTypeDao.save(roomType);
 
-            saveAmenitys(savedRoomType, roomType.getAmenitys());
+//            saveAmenitys(savedRoomType, roomType.getAmenitys());
             result = savedRoomType;
         }
 
@@ -191,6 +186,11 @@ public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> 
             list.add(save(roomType));
         }
         return list;
+    }
+
+    @Override
+    public RoomType update(RoomType T) {
+        return null;
     }
 
 
@@ -238,17 +238,17 @@ public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> 
         return entityManager.createQuery(query).getResultList();
     }
 
-    private void saveAmenitys(RoomType roomType, List<Amenity> amenitys) {
-
-        if (ListUtil.isNotEmpty(roomType.getAmenitys())) {
-            List<Amenity> savedAmenitys = new ArrayList<>();
-            amenitys.forEach(element -> {
-                element.setRoomType(roomType);
-                amenityService.save(element);
-            });
-            roomType.setAmenitys(savedAmenitys);
-        }
-    }
+//    private void saveAmenitys(RoomType roomType, List<Amenity> amenitys) {
+//
+//        if (ListUtil.isNotEmpty(roomType.getAmenitys())) {
+//            List<Amenity> savedAmenitys = new ArrayList<>();
+//            amenitys.forEach(element -> {
+//                element.setRoomType(roomType);
+//                amenityService.save(element);
+//            });
+//            roomType.setAmenitys(savedAmenitys);
+//        }
+//    }
 
 
     @Override
@@ -266,17 +266,17 @@ public class RoomTypeChercheurServiceImpl extends AbstractServiceImpl<RoomType> 
         }
     }
 
-    private void associateAmenity(RoomType roomType, List<Amenity> amenity) {
-        if (ListUtil.isNotEmpty(amenity)) {
-            amenity.forEach(e -> e.setRoomType(roomType));
-        }
-    }
+//    private void associateAmenity(RoomType roomType, List<Amenity> amenity) {
+//        if (ListUtil.isNotEmpty(amenity)) {
+//            amenity.forEach(e -> e.setRoomType(roomType));
+//        }
+//    }
 
-
-    public List<RoomType> findAllNonArchive() {
-        String query = "SELECT o FROM RoomType o  WHERE o.archive != true AND o.visible = true";
-        return entityManager.createQuery(query).getResultList();
-    }
+//
+//    public List<RoomType> findAllNonArchive() {
+//        String query = "SELECT o FROM RoomType o  WHERE o.archive != true AND o.visible = true";
+//        return entityManager.createQuery(query).getResultList();
+//    }
 
     public List<RoomType> findAllByOwner() {
         List<RoomType> result = new ArrayList();

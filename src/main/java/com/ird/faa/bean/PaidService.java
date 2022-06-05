@@ -1,15 +1,12 @@
 package com.ird.faa.bean;
 
-import java.util.Objects;
-import java.util.List;
-
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
-import java.math.BigDecimal;
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -41,11 +38,15 @@ public class PaidService implements Archivable {
     @Temporal(TemporalType.DATE)
     private Date dateCreation;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private PriceType priceType;
 
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<RoomType> roomTypes;
+//    @OneToMany(cascade = {CascadeType.ALL})
+//    private List<RoomType> roomTypes;
+
+
+    @OneToMany(mappedBy = "paidService", cascade = CascadeType.ALL)
+    List<PaidServiceItemType> paidServiceItemTypes;
 
     @ManyToOne
     private CouponManagment couponManagment;
@@ -87,13 +88,6 @@ public class PaidService implements Archivable {
         this.code = code;
     }
 
-    public List<RoomType> getRoomTypes() {
-        return this.roomTypes;
-    }
-
-    public void setRoomTypes(List<RoomType> roomTypes) {
-        this.roomTypes = roomTypes;
-    }
 
     public PriceType getPriceType() {
         return this.priceType;
@@ -149,6 +143,14 @@ public class PaidService implements Archivable {
 
     public void setDateCreation(Date dateCreation) {
         this.dateCreation = dateCreation;
+    }
+
+    public List<PaidServiceItemType> getPaidServiceItemTypes() {
+        return this.paidServiceItemTypes;
+    }
+
+    public void setPaidServiceItemTypes(List<PaidServiceItemType> paidServiceItemTypes) {
+        this.paidServiceItemTypes = paidServiceItemTypes;
     }
 
     @Override

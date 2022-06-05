@@ -125,7 +125,7 @@ public class PaidServiceChercheurServiceImpl extends AbstractServiceImpl<PaidSer
     private void findAssociatedLists(PaidService paidService) {
         if (paidService != null && paidService.getId() != null) {
             List<RoomType> roomTypes = roomTypeService.findByPaidServiceId(paidService.getId());
-            paidService.setRoomTypes(roomTypes);
+//            paidService.setRoomTypes(roomTypes);
         }
     }
 
@@ -135,16 +135,16 @@ public class PaidServiceChercheurServiceImpl extends AbstractServiceImpl<PaidSer
         }
     }
 
-    private void updateAssociatedLists(PaidService paidService) {
-        if (paidService != null && paidService.getId() != null) {
-            List
-                    <List<RoomType>> resultRoomTypes = roomTypeService.getToBeSavedAndToBeDeleted(roomTypeService.findByPaidServiceId(paidService.getId()), paidService.getRoomTypes());
-            roomTypeService.delete(resultRoomTypes.get(1));
-            associateRoomType(paidService, resultRoomTypes.get(0));
-            roomTypeService.update(resultRoomTypes.get(0));
-
-        }
-    }
+//    private void updateAssociatedLists(PaidService paidService) {
+//        if (paidService != null && paidService.getId() != null) {
+//            List
+//                    <List<RoomType>> resultRoomTypes = roomTypeService.getToBeSavedAndToBeDeleted(roomTypeService.findByPaidServiceId(paidService.getId()), paidService.getRoomTypes());
+//            roomTypeService.delete(resultRoomTypes.get(1));
+//            associateRoomType(paidService, resultRoomTypes.get(0));
+//            roomTypeService.update(resultRoomTypes.get(0));
+//
+//        }
+//    }
 
     @Transactional
     public int deleteById(Long id) {
@@ -164,7 +164,7 @@ public class PaidServiceChercheurServiceImpl extends AbstractServiceImpl<PaidSer
         if (foundedPaidService == null) return null;
         else {
             archivableService.prepare(paidService);
-            updateAssociatedLists(paidService);
+//            updateAssociatedLists(paidService);
             return paidServiceDao.save(paidService);
         }
     }
@@ -194,7 +194,7 @@ public class PaidServiceChercheurServiceImpl extends AbstractServiceImpl<PaidSer
 
             PaidService savedPaidService = paidServiceDao.save(paidService);
 
-            saveRoomTypes(savedPaidService, paidService.getRoomTypes());
+//            saveRoomTypes(savedPaidService, paidService.getRoomTypes());
             result = savedPaidService;
         }
 
@@ -247,17 +247,17 @@ public class PaidServiceChercheurServiceImpl extends AbstractServiceImpl<PaidSer
         return entityManager.createQuery(query).getResultList();
     }
 
-    private void saveRoomTypes(PaidService paidService, List<RoomType> roomTypes) {
-
-        if (ListUtil.isNotEmpty(paidService.getRoomTypes())) {
-            List<RoomType> savedRoomTypes = new ArrayList<>();
-            roomTypes.forEach(element -> {
-                element.setPaidService(paidService);
-                roomTypeService.save(element);
-            });
-            paidService.setRoomTypes(savedRoomTypes);
-        }
-    }
+//    private void saveRoomTypes(PaidService paidService, List<RoomType> roomTypes) {
+//
+//        if (ListUtil.isNotEmpty(paidService.getRoomTypes())) {
+//            List<RoomType> savedRoomTypes = new ArrayList<>();
+//            roomTypes.forEach(element -> {
+//                element.setPaidService(paidService);
+//                roomTypeService.save(element);
+//            });
+//            paidService.setRoomTypes(savedRoomTypes);
+//        }
+//    }
 
     private void findPriceType(PaidService paidService) {
         PriceType loadedPriceType = priceTypeService.findByIdOrCode(paidService.getPriceType());
@@ -283,11 +283,11 @@ public class PaidServiceChercheurServiceImpl extends AbstractServiceImpl<PaidSer
         }
     }
 
-    private void associateRoomType(PaidService paidService, List<RoomType> roomType) {
-        if (ListUtil.isNotEmpty(roomType)) {
-            roomType.forEach(e -> e.setPaidService(paidService));
-        }
-    }
+//    private void associateRoomType(PaidService paidService, List<RoomType> roomType) {
+//        if (ListUtil.isNotEmpty(roomType)) {
+//            roomType.forEach(e -> e.setPaidService(paidService));
+//        }
+//    }
 
 
     public List<PaidService> findAllNonArchive() {

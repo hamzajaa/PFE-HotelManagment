@@ -13,6 +13,7 @@ import com.ird.faa.service.util.ListUtil;
 import com.ird.faa.service.util.SearchUtil;
 import com.ird.faa.ws.rest.provided.vo.RoomTypeItemAmenityVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class RoomTypeItemAmenityImpl extends AbstractServiceImpl<RoomTypeItemAmenity> implements RoomTypeItemAmenityAdminService {
 
     @Autowired
@@ -87,9 +89,9 @@ public class RoomTypeItemAmenityImpl extends AbstractServiceImpl<RoomTypeItemAme
     }
 
     @Override
-    public List<RoomTypeItemAmenity> save(List<RoomTypeItemAmenity> roomTypeItemAmenities) {
+    public List<RoomTypeItemAmenity> save(List<RoomTypeItemAmenity> roomTypeItemAmenitys) {
         List<RoomTypeItemAmenity> list = new ArrayList<>();
-        for (RoomTypeItemAmenity roomTypeItemAmenity : roomTypeItemAmenities) {
+        for (RoomTypeItemAmenity roomTypeItemAmenity : roomTypeItemAmenitys) {
             list.add(save(roomTypeItemAmenity));
         }
         return list;
@@ -137,7 +139,7 @@ public class RoomTypeItemAmenityImpl extends AbstractServiceImpl<RoomTypeItemAme
     }
 
     private void findAmenity(RoomTypeItemAmenity roomTypeItemAmenity) {
-        Amenity loadedAmenity = amenityService.findById(roomTypeItemAmenity.getAmenity().getId());
+        Amenity loadedAmenity = amenityService.findByIdOrName(roomTypeItemAmenity.getAmenity());
 
         if (loadedAmenity == null) {
             return;
@@ -160,16 +162,16 @@ public class RoomTypeItemAmenityImpl extends AbstractServiceImpl<RoomTypeItemAme
 
     @Override
     @Transactional
-    public void delete(List<RoomTypeItemAmenity> roomTypeItemAmenities) {
-        if (ListUtil.isNotEmpty(roomTypeItemAmenities)) {
-            roomTypeItemAmenities.forEach(e -> roomTypeItemAmenityDao.delete(e));
+    public void delete(List<RoomTypeItemAmenity> roomTypeItemAmenitys) {
+        if (ListUtil.isNotEmpty(roomTypeItemAmenitys)) {
+            roomTypeItemAmenitys.forEach(e -> roomTypeItemAmenityDao.delete(e));
         }
     }
 
     @Override
-    public void update(List<RoomTypeItemAmenity> roomTypeItemAmenities) {
-        if (ListUtil.isNotEmpty(roomTypeItemAmenities)) {
-            roomTypeItemAmenities.forEach(e -> roomTypeItemAmenityDao.save(e));
+    public void update(List<RoomTypeItemAmenity> roomTypeItemAmenitys) {
+        if (ListUtil.isNotEmpty(roomTypeItemAmenitys)) {
+            roomTypeItemAmenitys.forEach(e -> roomTypeItemAmenityDao.save(e));
         }
     }
 
@@ -179,6 +181,7 @@ public class RoomTypeItemAmenityImpl extends AbstractServiceImpl<RoomTypeItemAme
     }
 
     @Override
+    @Transactional
     public int deleteByAmenityId(Long id) {
         return roomTypeItemAmenityDao.deleteByAmenityId(id);
     }
@@ -189,6 +192,7 @@ public class RoomTypeItemAmenityImpl extends AbstractServiceImpl<RoomTypeItemAme
     }
 
     @Override
+    @Transactional
     public int deleteByRoomTypeId(Long id) {
         return roomTypeItemAmenityDao.deleteByRoomTypeId(id);
     }
