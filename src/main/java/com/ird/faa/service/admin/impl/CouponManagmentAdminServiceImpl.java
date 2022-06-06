@@ -1,42 +1,41 @@
 package com.ird.faa.service.admin.impl;
 
-import java.util.List;
-
-import java.util.ArrayList;
-
 import com.ird.faa.bean.*;
+import com.ird.faa.dao.CouponManagmentDao;
+import com.ird.faa.service.admin.facade.*;
+import com.ird.faa.service.core.impl.AbstractServiceImpl;
+import com.ird.faa.service.util.ListUtil;
+import com.ird.faa.service.util.SearchUtil;
+import com.ird.faa.ws.rest.provided.vo.CouponManagmentVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.ird.faa.dao.CouponManagmentDao;
-import com.ird.faa.service.admin.facade.CouponManagmentAdminService;
-import com.ird.faa.service.admin.facade.EmployeeAdminService;
-import com.ird.faa.service.admin.facade.RoomTypeAdminService;
-import com.ird.faa.service.admin.facade.CouponTypeAdminService;
-import com.ird.faa.service.admin.facade.PaidServiceAdminService;
-
-import com.ird.faa.ws.rest.provided.vo.CouponManagmentVo;
-import com.ird.faa.service.util.*;
-
-import com.ird.faa.service.core.impl.AbstractServiceImpl;
-
-@Service
+@Component
 public class CouponManagmentAdminServiceImpl extends AbstractServiceImpl<CouponManagment> implements CouponManagmentAdminService {
 
     @Autowired
     private CouponManagmentDao couponManagmentDao;
 
-    @Autowired
-    private EmployeeAdminService employeeService;
-    @Autowired
-    private RoomTypeAdminService roomTypeService;
+//    @Autowired
+//    private EmployeeAdminService employeeService;
+//    @Autowired
+//    private RoomTypeAdminService roomTypeService;
     @Autowired
     private CouponTypeAdminService couponTypeService;
-    @Autowired
-    private PaidServiceAdminService paidServiceService;
+    
+//    @Autowired
+//    private PaidServiceAdminService paidServiceService;
+
+    @Autowired(required = true)
+    private CouponManagmentItemGuestAdminService couponManagmentItemGuestService;
+
+    @Autowired(required = false)
+    private CouponManagmentItemRoomTypeAdminService couponManagmentItemRoomTypeService;
 
 
     @Autowired
@@ -88,44 +87,69 @@ public class CouponManagmentAdminServiceImpl extends AbstractServiceImpl<CouponM
 
     private void findAssociatedLists(CouponManagment couponManagment) {
         if (couponManagment != null && couponManagment.getId() != null) {
-            List<Employee> employees = employeeService.findByCouponManagmentId(couponManagment.getId());
-            couponManagment.setEmployees(employees);
-            List<RoomType> roomTypes = roomTypeService.findByCouponManagmentId(couponManagment.getId());
-            couponManagment.setRoomTypes(roomTypes);
-            List<PaidService> paidServices = paidServiceService.findByCouponManagmentId(couponManagment.getId());
-            couponManagment.setPaidServices(paidServices);
+            List<CouponManagmentItemGuest> couponManagmentItemGuests = couponManagmentItemGuestService.findByCouponManagmentId(couponManagment.getId());
+            couponManagment.setCouponManagmentItemGuests(couponManagmentItemGuests);
+            List<CouponManagmentItemRoomType> couponManagmentItemRoomTypes = couponManagmentItemRoomTypeService.findByCouponManagmentId(couponManagment.getId());
+            couponManagment.setCouponManagmentItemRoomTypes(couponManagmentItemRoomTypes);
         }
+
+        //        if (couponManagment != null && couponManagment.getId() != null) {
+//            List<Employee> employees = employeeService.findByCouponManagmentId(couponManagment.getId());
+//            couponManagment.setEmployees(employees);
+//            List<RoomType> roomTypes = roomTypeService.findByCouponManagmentId(couponManagment.getId());
+//            couponManagment.setRoomTypes(roomTypes);
+//            List<PaidService> paidServices = paidServiceService.findByCouponManagmentId(couponManagment.getId());
+//            couponManagment.setPaidServices(paidServices);
+//        }
     }
 
     private void deleteAssociatedLists(Long id) {
         if (id != null) {
-            employeeService.deleteByCouponManagmentId(id);
-            roomTypeService.deleteByCouponManagmentId(id);
-            paidServiceService.deleteByCouponManagmentId(id);
+            couponManagmentItemGuestService.deleteByCouponManagmentId(id);
+            couponManagmentItemRoomTypeService.deleteByCouponManagmentId(id);
+
+//            employeeService.deleteByCouponManagmentId(id);
+//            roomTypeService.deleteByCouponManagmentId(id);
+//            paidServiceService.deleteByCouponManagmentId(id);
         }
     }
 
     private void updateAssociatedLists(CouponManagment couponManagment) {
+
         if (couponManagment != null && couponManagment.getId() != null) {
             List
-                    <List<Employee>> resultEmployees = employeeService.getToBeSavedAndToBeDeleted(employeeService.findByCouponManagmentId(couponManagment.getId()), couponManagment.getEmployees());
-            employeeService.delete(resultEmployees.get(1));
-            associateEmployee(couponManagment, resultEmployees.get(0));
-            employeeService.update(resultEmployees.get(0));
-
+                    <List<CouponManagmentItemGuest>> resultCouponManagmentItemGuests = couponManagmentItemGuestService.getToBeSavedAndToBeDeleted(couponManagmentItemGuestService.findByCouponManagmentId(couponManagment.getId()), couponManagment.getCouponManagmentItemGuests());
+            couponManagmentItemGuestService.delete(resultCouponManagmentItemGuests.get(1));
+            associateCouponManagmentItemGuest(couponManagment, resultCouponManagmentItemGuests.get(0));
+            couponManagmentItemGuestService.update(resultCouponManagmentItemGuests.get(0));
             List
-                    <List<RoomType>> resultRoomTypes = roomTypeService.getToBeSavedAndToBeDeleted(roomTypeService.findByCouponManagmentId(couponManagment.getId()), couponManagment.getRoomTypes());
-            roomTypeService.delete(resultRoomTypes.get(1));
-            associateRoomType(couponManagment, resultRoomTypes.get(0));
-            roomTypeService.update(resultRoomTypes.get(0));
-
-            List
-                    <List<PaidService>> resultPaidServices = paidServiceService.getToBeSavedAndToBeDeleted(paidServiceService.findByCouponManagmentId(couponManagment.getId()), couponManagment.getPaidServices());
-            paidServiceService.delete(resultPaidServices.get(1));
-            associatePaidService(couponManagment, resultPaidServices.get(0));
-            paidServiceService.update(resultPaidServices.get(0));
+                    <List<CouponManagmentItemRoomType>> resultCouponManagmentItemRoomTypes = couponManagmentItemRoomTypeService.getToBeSavedAndToBeDeleted(couponManagmentItemRoomTypeService.findByCouponManagmentId(couponManagment.getId()), couponManagment.getCouponManagmentItemRoomTypes());
+            couponManagmentItemRoomTypeService.delete(resultCouponManagmentItemRoomTypes.get(1));
+            associateCouponManagmentItemRoomType(couponManagment, resultCouponManagmentItemRoomTypes.get(0));
+            couponManagmentItemRoomTypeService.update(resultCouponManagmentItemRoomTypes.get(0));
 
         }
+
+//        if (couponManagment != null && couponManagment.getId() != null) {
+//            List
+//                    <List<Employee>> resultEmployees = employeeService.getToBeSavedAndToBeDeleted(employeeService.findByCouponManagmentId(couponManagment.getId()), couponManagment.getEmployees());
+//            employeeService.delete(resultEmployees.get(1));
+//            associateEmployee(couponManagment, resultEmployees.get(0));
+//            employeeService.update(resultEmployees.get(0));
+//
+//            List
+//                    <List<RoomType>> resultRoomTypes = roomTypeService.getToBeSavedAndToBeDeleted(roomTypeService.findByCouponManagmentId(couponManagment.getId()), couponManagment.getRoomTypes());
+//            roomTypeService.delete(resultRoomTypes.get(1));
+//            associateRoomType(couponManagment, resultRoomTypes.get(0));
+//            roomTypeService.update(resultRoomTypes.get(0));
+//
+//            List
+//                    <List<PaidService>> resultPaidServices = paidServiceService.getToBeSavedAndToBeDeleted(paidServiceService.findByCouponManagmentId(couponManagment.getId()), couponManagment.getPaidServices());
+//            paidServiceService.delete(resultPaidServices.get(1));
+//            associatePaidService(couponManagment, resultPaidServices.get(0));
+//            paidServiceService.update(resultPaidServices.get(0));
+//
+//        }
     }
 
     @Transactional
@@ -160,9 +184,22 @@ public class CouponManagmentAdminServiceImpl extends AbstractServiceImpl<CouponM
 
         CouponManagment savedCouponManagment = couponManagmentDao.save(couponManagment);
 
-        saveEmployees(savedCouponManagment, couponManagment.getEmployees());
-        saveRoomTypes(savedCouponManagment, couponManagment.getRoomTypes());
-        savePaidServices(savedCouponManagment, couponManagment.getPaidServices());
+//        saveEmployees(savedCouponManagment, couponManagment.getEmployees());
+//        saveRoomTypes(savedCouponManagment, couponManagment.getRoomTypes());
+//        savePaidServices(savedCouponManagment, couponManagment.getPaidServices());
+
+        if (ListUtil.isNotEmpty(couponManagment.getCouponManagmentItemGuests())) {
+            couponManagment.getCouponManagmentItemGuests().forEach(e -> {
+                e.setCouponManagment(couponManagment);
+                couponManagmentItemGuestService.save(e);
+            });
+        }
+        if (ListUtil.isNotEmpty(couponManagment.getCouponManagmentItemRoomTypes())) {
+            couponManagment.getCouponManagmentItemRoomTypes().forEach(e -> {
+                e.setCouponManagment(couponManagment);
+                couponManagmentItemRoomTypeService.save(e);
+            });
+        }
         result = savedCouponManagment;
 
         return result;
@@ -187,8 +224,6 @@ public class CouponManagmentAdminServiceImpl extends AbstractServiceImpl<CouponM
         couponManagmentDao.delete(foundedCouponManagment);
         return 1;
     }
-
-
 
 
     public List<CouponManagment> findByCriteria(CouponManagmentVo couponManagmentVo) {
@@ -223,41 +258,41 @@ public class CouponManagmentAdminServiceImpl extends AbstractServiceImpl<CouponM
         return entityManager.createQuery(query).getResultList();
     }
 
-    private void saveEmployees(CouponManagment couponManagment, List<Employee> employees) {
+//    private void saveEmployees(CouponManagment couponManagment, List<Employee> employees) {
+//
+//        if (ListUtil.isNotEmpty(couponManagment.getEmployees())) {
+//            List<Employee> savedEmployees = new ArrayList<>();
+//            employees.forEach(element -> {
+//                element.setCouponManagment(couponManagment);
+//                employeeService.save(element);
+//            });
+//            couponManagment.setEmployees(savedEmployees);
+//        }
+//    }
 
-        if (ListUtil.isNotEmpty(couponManagment.getEmployees())) {
-            List<Employee> savedEmployees = new ArrayList<>();
-            employees.forEach(element -> {
-                element.setCouponManagment(couponManagment);
-                employeeService.save(element);
-            });
-            couponManagment.setEmployees(savedEmployees);
-        }
-    }
+//    private void saveRoomTypes(CouponManagment couponManagment, List<RoomType> roomTypes) {
+//
+//        if (ListUtil.isNotEmpty(couponManagment.getRoomTypes())) {
+//            List<RoomType> savedRoomTypes = new ArrayList<>();
+//            roomTypes.forEach(element -> {
+//                element.setCouponManagment(couponManagment);
+//                roomTypeService.save(element);
+//            });
+//            couponManagment.setRoomTypes(savedRoomTypes);
+//        }
+//    }
 
-    private void saveRoomTypes(CouponManagment couponManagment, List<RoomType> roomTypes) {
-
-        if (ListUtil.isNotEmpty(couponManagment.getRoomTypes())) {
-            List<RoomType> savedRoomTypes = new ArrayList<>();
-            roomTypes.forEach(element -> {
-                element.setCouponManagment(couponManagment);
-                roomTypeService.save(element);
-            });
-            couponManagment.setRoomTypes(savedRoomTypes);
-        }
-    }
-
-    private void savePaidServices(CouponManagment couponManagment, List<PaidService> paidServices) {
-
-        if (ListUtil.isNotEmpty(couponManagment.getPaidServices())) {
-            List<PaidService> savedPaidServices = new ArrayList<>();
-            paidServices.forEach(element -> {
-                element.setCouponManagment(couponManagment);
-                paidServiceService.save(element);
-            });
-            couponManagment.setPaidServices(savedPaidServices);
-        }
-    }
+//    private void savePaidServices(CouponManagment couponManagment, List<PaidService> paidServices) {
+//
+//        if (ListUtil.isNotEmpty(couponManagment.getPaidServices())) {
+//            List<PaidService> savedPaidServices = new ArrayList<>();
+//            paidServices.forEach(element -> {
+//                element.setCouponManagment(couponManagment);
+//                paidServiceService.save(element);
+//            });
+//            couponManagment.setPaidServices(savedPaidServices);
+//        }
+//    }
 
     private void findCouponType(CouponManagment couponManagment) {
         CouponType loadedCouponType = couponTypeService.findByIdOrCode(couponManagment.getCouponType());
@@ -301,5 +336,16 @@ public class CouponManagmentAdminServiceImpl extends AbstractServiceImpl<CouponM
         }
     }
 
+    private void associateCouponManagmentItemGuest(CouponManagment couponManagment, List<CouponManagmentItemGuest> couponManagmentItemGuests) {
+        if (ListUtil.isNotEmpty(couponManagmentItemGuests)) {
+            couponManagmentItemGuests.forEach(e -> e.setCouponManagment(couponManagment));
+        }
+    }
+
+    private void associateCouponManagmentItemRoomType(CouponManagment couponManagment, List<CouponManagmentItemRoomType> couponManagmentItemRoomTypes) {
+        if (ListUtil.isNotEmpty(couponManagmentItemRoomTypes)) {
+            couponManagmentItemRoomTypes.forEach(e -> e.setCouponManagment(couponManagment));
+        }
+    }
 
 }

@@ -1,15 +1,12 @@
 package com.ird.faa.bean;
 
-import java.util.Objects;
-import java.util.List;
-
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
-import java.math.BigDecimal;
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -46,12 +43,37 @@ public class CouponManagment {
     @ManyToOne
     private CouponType couponType;
 
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<Employee> employees;
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<RoomType> roomTypes;
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<PaidService> paidServices;
+//    @OneToMany(cascade = {CascadeType.ALL})
+//    private List<Employee> employees;
+//    @OneToMany(cascade = {CascadeType.ALL})
+//    private List<RoomType> roomTypes;
+//    @OneToMany(cascade = {CascadeType.ALL})
+//    private List<PaidService> paidServices;
+
+    public List<CouponManagmentItemRoomType> getCouponManagmentItemRoomTypes() {
+        return this.couponManagmentItemRoomTypes;
+    }
+
+    public void setCouponManagmentItemRoomTypes(List<CouponManagmentItemRoomType> couponManagmentItemRoomTypes) {
+        this.couponManagmentItemRoomTypes = couponManagmentItemRoomTypes;
+    }
+
+    @OneToMany(mappedBy = "couponManagment", cascade = CascadeType.ALL)
+    List<CouponManagmentItemRoomType> couponManagmentItemRoomTypes;
+
+
+    @OneToMany(mappedBy = "couponManagment", cascade = CascadeType.ALL)
+    List<CouponManagmentItemGuest> couponManagmentItemGuests;
+
+    public List<CouponManagmentItemGuest> getCouponManagmentItemGuests() {
+        return this.couponManagmentItemGuests;
+    }
+
+    public void setCouponManagmentItemGuests(List<CouponManagmentItemGuest> couponManagmentItemGuests) {
+        this.couponManagmentItemGuests = couponManagmentItemGuests;
+    }
+
+
 
     public CouponManagment() {
         super();
@@ -146,22 +168,22 @@ public class CouponManagment {
         this.maxAmount = maxAmount;
     }
 
-    public List<Employee> getEmployees() {
-        return this.employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public List<RoomType> getRoomTypes() {
-        return this.roomTypes;
-    }
-
-    public void setRoomTypes(List<RoomType> roomTypes) {
-        this.roomTypes = roomTypes;
-    }
-
+//    public List<Employee> getEmployees() {
+//        return this.employees;
+//    }
+//
+//    public void setEmployees(List<Employee> employees) {
+//        this.employees = employees;
+//    }
+//
+//    public List<RoomType> getRoomTypes() {
+//        return this.roomTypes;
+//    }
+//
+//    public void setRoomTypes(List<RoomType> roomTypes) {
+//        this.roomTypes = roomTypes;
+//    }
+//
     public BigDecimal getLimitPerUser() {
         return this.limitPerUser;
     }
@@ -178,13 +200,13 @@ public class CouponManagment {
         this.limitPerCoupon = limitPerCoupon;
     }
 
-    public List<PaidService> getPaidServices() {
-        return this.paidServices;
-    }
-
-    public void setPaidServices(List<PaidService> paidServices) {
-        this.paidServices = paidServices;
-    }
+//    public List<PaidService> getPaidServices() {
+//        return this.paidServices;
+//    }
+//
+//    public void setPaidServices(List<PaidService> paidServices) {
+//        this.paidServices = paidServices;
+//    }
 
     @Override
     public boolean equals(Object o) {

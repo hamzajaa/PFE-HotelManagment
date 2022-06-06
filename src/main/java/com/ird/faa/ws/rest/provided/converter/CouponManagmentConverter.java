@@ -1,15 +1,25 @@
 package com.ird.faa.ws.rest.provided.converter;
 
+import com.ird.faa.bean.CouponManagment;
+import com.ird.faa.service.util.DateUtil;
+import com.ird.faa.service.util.ListUtil;
+import com.ird.faa.service.util.NumberUtil;
+import com.ird.faa.service.util.StringUtil;
+import com.ird.faa.ws.rest.provided.vo.CouponManagmentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.ird.faa.service.util.*;
-
-
-import com.ird.faa.bean.CouponManagment;
-import com.ird.faa.ws.rest.provided.vo.CouponManagmentVo;
 
 @Component
 public class CouponManagmentConverter extends AbstractConverter<CouponManagment, CouponManagmentVo> {
+
+
+    @Autowired(required = false)
+    private CouponManagmentItemGuestConverter couponManagmentItemGuestConverter;
+    private Boolean couponManagmentItemGuests;
+
+    @Autowired(required = false)
+    private CouponManagmentItemRoomTypeConverter couponManagmentItemRoomTypeConverter;
+    private Boolean couponManagmentItemRoomTypes;
 
     @Autowired
     private EmployeeConverter employeeConverter;
@@ -62,12 +72,17 @@ public class CouponManagmentConverter extends AbstractConverter<CouponManagment,
             if (vo.getCouponTypeVo() != null && this.couponType)
                 item.setCouponType(couponTypeConverter.toItem(vo.getCouponTypeVo()));
 
-            if (ListUtil.isNotEmpty(vo.getEmployeesVo()) && this.employees)
-                item.setEmployees(employeeConverter.toItem(vo.getEmployeesVo()));
-            if (ListUtil.isNotEmpty(vo.getRoomTypesVo()) && this.roomTypes)
-                item.setRoomTypes(roomTypeConverter.toItem(vo.getRoomTypesVo()));
-            if (ListUtil.isNotEmpty(vo.getPaidServicesVo()) && this.paidServices)
-                item.setPaidServices(paidServiceConverter.toItem(vo.getPaidServicesVo()));
+//            if (ListUtil.isNotEmpty(vo.getEmployeesVo()) && this.employees)
+//                item.setEmployees(employeeConverter.toItem(vo.getEmployeesVo()));
+//            if (ListUtil.isNotEmpty(vo.getRoomTypesVo()) && this.roomTypes)
+//                item.setRoomTypes(roomTypeConverter.toItem(vo.getRoomTypesVo()));
+//            if (ListUtil.isNotEmpty(vo.getPaidServicesVo()) && this.paidServices)
+//                item.setPaidServices(paidServiceConverter.toItem(vo.getPaidServicesVo()));
+
+            if (ListUtil.isNotEmpty(vo.getCouponManagmentItemGuestsVo()) && this.couponManagmentItemGuests)
+                item.setCouponManagmentItemGuests(couponManagmentItemGuestConverter.toItem(vo.getCouponManagmentItemGuestsVo()));
+            if (ListUtil.isNotEmpty(vo.getCouponManagmentItemRoomTypesVo()) && this.couponManagmentItemRoomTypes)
+                item.setCouponManagmentItemRoomTypes(couponManagmentItemRoomTypeConverter.toItem(vo.getCouponManagmentItemRoomTypesVo()));
 
             return item;
         }
@@ -116,23 +131,36 @@ public class CouponManagmentConverter extends AbstractConverter<CouponManagment,
             if (item.getCouponType() != null && this.couponType) {
                 vo.setCouponTypeVo(couponTypeConverter.toVo(item.getCouponType()));
             }
-            if (ListUtil.isNotEmpty(item.getEmployees()) && this.employees) {
-                employeeConverter.init(true);
-                employeeConverter.setCouponManagment(false);
-                vo.setEmployeesVo(employeeConverter.toVo(item.getEmployees()));
-                employeeConverter.setCouponManagment(true);
+//            if (ListUtil.isNotEmpty(item.getEmployees()) && this.employees) {
+//                employeeConverter.init(true);
+//                employeeConverter.setCouponManagment(false);
+//                vo.setEmployeesVo(employeeConverter.toVo(item.getEmployees()));
+//                employeeConverter.setCouponManagment(true);
+//            }
+//            if (ListUtil.isNotEmpty(item.getRoomTypes()) && this.roomTypes) {
+//                roomTypeConverter.init(true);
+//                roomTypeConverter.setCouponManagment(false);
+//                vo.setRoomTypesVo(roomTypeConverter.toVo(item.getRoomTypes()));
+//                roomTypeConverter.setCouponManagment(true);
+//            }
+//            if (ListUtil.isNotEmpty(item.getPaidServices()) && this.paidServices) {
+//                paidServiceConverter.init(true);
+//                paidServiceConverter.setCouponManagment(false);
+//                vo.setPaidServicesVo(paidServiceConverter.toVo(item.getPaidServices()));
+//                paidServiceConverter.setCouponManagment(true);
+//            }
+
+            if (ListUtil.isNotEmpty(item.getCouponManagmentItemGuests()) && this.couponManagmentItemGuests) {
+                couponManagmentItemGuestConverter.init(true);
+                couponManagmentItemGuestConverter.setCouponManagment(false);
+                vo.setCouponManagmentItemGuestsVo(couponManagmentItemGuestConverter.toVo(item.getCouponManagmentItemGuests()));
+                couponManagmentItemGuestConverter.setCouponManagment(true);
             }
-            if (ListUtil.isNotEmpty(item.getRoomTypes()) && this.roomTypes) {
-                roomTypeConverter.init(true);
-                roomTypeConverter.setCouponManagment(false);
-                vo.setRoomTypesVo(roomTypeConverter.toVo(item.getRoomTypes()));
-                roomTypeConverter.setCouponManagment(true);
-            }
-            if (ListUtil.isNotEmpty(item.getPaidServices()) && this.paidServices) {
-                paidServiceConverter.init(true);
-                paidServiceConverter.setCouponManagment(false);
-                vo.setPaidServicesVo(paidServiceConverter.toVo(item.getPaidServices()));
-                paidServiceConverter.setCouponManagment(true);
+            if (ListUtil.isNotEmpty(item.getCouponManagmentItemRoomTypes()) && this.couponManagmentItemRoomTypes) {
+                couponManagmentItemRoomTypeConverter.init(true);
+                couponManagmentItemRoomTypeConverter.setCouponManagment(false);
+                vo.setCouponManagmentItemRoomTypesVo(couponManagmentItemRoomTypeConverter.toVo(item.getCouponManagmentItemRoomTypes()));
+                couponManagmentItemRoomTypeConverter.setCouponManagment(true);
             }
 
             return vo;
@@ -144,6 +172,9 @@ public class CouponManagmentConverter extends AbstractConverter<CouponManagment,
         employees = value;
         roomTypes = value;
         paidServices = value;
+        couponManagmentItemGuests = value;
+        couponManagmentItemRoomTypes = value;
+
     }
 
 
@@ -214,5 +245,38 @@ public class CouponManagmentConverter extends AbstractConverter<CouponManagment,
         this.paidServices = paidServices;
     }
 
+    public CouponManagmentItemGuestConverter getCouponManagmentItemGuestConverter() {
+        return couponManagmentItemGuestConverter;
+    }
+
+    public void setCouponManagmentItemGuestConverter(CouponManagmentItemGuestConverter couponManagmentItemGuestConverter) {
+        this.couponManagmentItemGuestConverter = couponManagmentItemGuestConverter;
+    }
+
+    public Boolean isCouponManagmentItemGuests() {
+        return this.couponManagmentItemGuests;
+    }
+
+    public void setCouponManagmentItemGuests(Boolean couponManagmentItemGuests) {
+        this.couponManagmentItemGuests = couponManagmentItemGuests;
+    }
+
+
+
+    public CouponManagmentItemRoomTypeConverter getCouponManagmentItemRoomTypeConverter() {
+        return couponManagmentItemRoomTypeConverter;
+    }
+
+    public void setCouponManagmentItemRoomTypeConverter(CouponManagmentItemRoomTypeConverter couponManagmentItemRoomTypeConverter) {
+        this.couponManagmentItemRoomTypeConverter = couponManagmentItemRoomTypeConverter;
+    }
+
+    public Boolean isCouponManagmentItemRoomTypes() {
+        return this.couponManagmentItemRoomTypes;
+    }
+
+    public void setCouponManagmentItemRoomTypes(Boolean couponManagmentItemRoomTypes) {
+        this.couponManagmentItemRoomTypes = couponManagmentItemRoomTypes;
+    }
 
 }
